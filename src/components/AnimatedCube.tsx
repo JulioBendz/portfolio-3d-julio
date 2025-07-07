@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Group } from 'three';
+import { Group, Quaternion, Euler } from 'three';
 import { Edges, Text } from '@react-three/drei';
 
 const skills = ['Angular', 'React', 'Three.js', 'Node.js', 'SQL', '.Net'];
@@ -23,14 +23,26 @@ const faceRotations: [number, number, number][] = [
   [Math.PI / 2, 0, 0],  // Bottom
 ];
 
+// These are the target rotations for the CUBE to bring a face to the front.
+const targetCubeEulerRotations = [
+    new Euler(0, 0, 0),         // Front
+    new Euler(0, Math.PI, 0),   // Back
+    new Euler(0, Math.PI / 2, 0),  // Left
+    new Euler(0, -Math.PI / 2, 0), // Right
+    new Euler(Math.PI / 2, 0, 0), // Top
+    new Euler(-Math.PI / 2, 0, 0),  // Bottom
+];
+
 interface RotatingCubeProps {
   isAutoRotating: boolean;
-  targetRotation: { x: number; y: number };
-  onSkillClick: (skillIndex: number, skill: string) => void;
+  targetQuaternion: Quaternion;
+  onRotationComplete: () => void;
+  onFaceClick: (skillIndex: number) => void;
 }
 
-const RotatingCube = ({ isAutoRotating, targetRotation, onSkillClick }: RotatingCubeProps) => {
+const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, onFaceClick }: RotatingCubeProps) => {
   const meshRef = useRef<Group>(null!);
+  const [isRotating, setIsRotating] = useState(false);
 
   useFrame(() => {
     if (!meshRef.current) return;
@@ -38,18 +50,23 @@ const RotatingCube = ({ isAutoRotating, targetRotation, onSkillClick }: Rotating
     if (isAutoRotating) {
       meshRef.current.rotation.y += 0.005;
     } else {
-      const diffX = targetRotation.x - meshRef.current.rotation.x;
-      const diffY = targetRotation.y - meshRef.current.rotation.y;
-
-      if (Math.abs(diffX) > 0.01 || Math.abs(diffY) > 0.01) {
-        meshRef.current.rotation.x += diffX * 0.05;
-        meshRef.current.rotation.y += diffY * 0.05;
-      } else {
-        meshRef.current.rotation.x = targetRotation.x;
-        meshRef.current.rotation.y = targetRotation.y;
+      if (!meshRef.current.quaternion.equals(targetQuaternion)) {
+        meshRef.current.quaternion.slerp(targetQuaternion, 0.1);
+        if (meshRef.current.quaternion.angleTo(targetQuaternion) < 0.01) {
+          meshRef.current.quaternion.copy(targetQuaternion);
+          if(isRotating) {
+            onRotationComplete();
+            setIsRotating(false);
+          }
+        }
       }
     }
   });
+
+  const handleFaceClick = (skillIndex: number) => {
+    setIsRotating(true);
+    onFaceClick(skillIndex);
+  }
 
   return (
     <group ref={meshRef}>
@@ -69,7 +86,7 @@ const RotatingCube = ({ isAutoRotating, targetRotation, onSkillClick }: Rotating
           color="#fff"
           anchorX="center"
           anchorY="middle"
-          onClick={() => onSkillClick(index, skill)}
+          onClick={() => handleFaceClick(index)}
         >
           {skill}
         </Text>
@@ -84,13 +101,21 @@ interface AnimatedCubeProps {
 
 const AnimatedCube = ({ onSkillClick }: AnimatedCubeProps) => {
   const [isAutoRotating, setIsAutoRotating] = useState(true);
-  const [targetCubeRotation, setTargetCubeRotation] = useState({ x: 0, y: 0 });
+  const [targetQuaternion, setTargetQuaternion] = useState(new Quaternion());
+  const [currentSkill, setCurrentSkill] = useState<string | null>(null);
 
-  const handleSkillClick = (skillIndex: number, skill: string) => {
+  const targetQuaternions = useMemo(() => targetCubeEulerRotations.map(euler => new Quaternion().setFromEuler(euler)), []);
+
+  const handleFaceClick = (skillIndex: number) => {
     setIsAutoRotating(false);
-    const target = faceRotations[skillIndex];
-    setTargetCubeRotation({ x: target[0], y: target[1] });
-    onSkillClick(skill);
+    setTargetQuaternion(targetQuaternions[skillIndex]);
+    setCurrentSkill(skills[skillIndex]);
+  };
+
+  const handleRotationComplete = () => {
+    if (currentSkill) {
+      onSkillClick(currentSkill);
+    }
   };
 
   return (
@@ -99,8 +124,9 @@ const AnimatedCube = ({ onSkillClick }: AnimatedCubeProps) => {
       <pointLight position={[10, 10, 10]} />
       <RotatingCube
         isAutoRotating={isAutoRotating}
-        targetRotation={targetCubeRotation}
-        onSkillClick={handleSkillClick}
+        targetQuaternion={targetQuaternion}
+        onFaceClick={handleFaceClick}
+        onRotationComplete={handleRotationComplete}
       />
     </>
   );
