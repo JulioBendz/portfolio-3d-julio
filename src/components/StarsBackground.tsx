@@ -17,7 +17,7 @@ const StarsBackground: React.FC<StarsBackgroundProps> = ({ skill }) => {
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} speed={1} />
       <Stars radius={200} depth={80} count={8000} factor={6} saturation={1} speed={2} />
       <Stars radius={300} depth={120} count={12000} factor={8} saturation={1.5} speed={3} />
-      <group position={[0, viewport.height / 2 - 2.5, 0]}>
+      <group position={[0, viewport.height / 2 - 2, 0]}>
         <InfoButton skill={skill} />
       </group>
     </>
