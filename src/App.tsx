@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import AnimatedCube from './components/AnimatedCube';
 import Header from './components/Header';
@@ -12,36 +12,62 @@ import { projectsData, Project } from './data/projects';
 function App() {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
 
-  const handleSkillClick = (skill: string) => {
+  const resetInactivityTimer = () => {
+    if (inactivityTimer.current) {
+      clearTimeout(inactivityTimer.current);
+    }
+    inactivityTimer.current = setTimeout(() => {
+      setSelectedSkill(null);
+      setIsAutoRotating(true);
+    }, 10000); // 10 seconds
+  };
+
+  useEffect(() => {
+    resetInactivityTimer();
+    return () => {
+      if (inactivityTimer.current) {
+        clearTimeout(inactivityTimer.current);
+      }
+    };
+  }, []);
+
+  const handleSkillClick = (skill: string | null) => {
     setSelectedSkill(skill);
+    setIsAutoRotating(false);
+    resetInactivityTimer();
   };
 
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
+    resetInactivityTimer();
   };
 
   const handleCloseModal = () => {
     setSelectedProject(null);
+    resetInactivityTimer();
   };
 
   return (
     <div className="relative h-screen w-screen bg-[#282c34]">
-      {/* Fondo de estrellas a pantalla completa */}
       <div className="absolute inset-0 z-0">
         <Canvas>
           <StarsBackground skill={selectedSkill} />
         </Canvas>
       </div>
 
-      {/* Botón WordPress HTML (alternativa funcional) */}
       <ExternalLinkButton />
 
-      {/* Contenido principal */}
       <div className="relative z-10 grid grid-rows-[auto_1fr_auto] h-full">
         <Header />
         <main className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-4 p-4 overflow-auto">
-          <div className="flex flex-col items-start justify-start">
+          <div 
+            className="flex flex-col items-start justify-start"
+            onMouseEnter={resetInactivityTimer}
+            onClick={resetInactivityTimer}
+          >
             <ProjectDisplay 
               projects={selectedSkill ? projectsData[selectedSkill] || [] : []} 
               onProjectClick={handleProjectClick} 
@@ -50,7 +76,11 @@ function App() {
           <div className="relative w-full h-full flex items-center justify-end">
             <div className="w-full h-full max-w-md max-h-md">
               <Canvas>
-                <AnimatedCube onSkillClick={handleSkillClick} />
+                <AnimatedCube 
+                  onSkillClick={handleSkillClick} 
+                  isAutoRotating={isAutoRotating}
+                  setIsAutoRotating={setIsAutoRotating}
+                />
               </Canvas>
             </div>
           </div>
@@ -58,7 +88,10 @@ function App() {
         <Footer />
       </div>
 
-      <ProjectDetailModal project={selectedProject} onClose={handleCloseModal} />
+      <ProjectDetailModal 
+        project={selectedProject} 
+        onClose={handleCloseModal} 
+      />
     </div>
   );
 }

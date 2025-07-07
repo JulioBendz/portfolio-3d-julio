@@ -96,11 +96,12 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
 };
 
 interface AnimatedCubeProps {
-  onSkillClick: (skill: string) => void;
+  onSkillClick: (skill: string | null) => void;
+  isAutoRotating: boolean;
+  setIsAutoRotating: (isAutoRotating: boolean) => void;
 }
 
-const AnimatedCube = ({ onSkillClick }: AnimatedCubeProps) => {
-  const [isAutoRotating, setIsAutoRotating] = useState(true);
+const AnimatedCube = ({ onSkillClick, isAutoRotating, setIsAutoRotating }: AnimatedCubeProps) => {
   const [targetQuaternion, setTargetQuaternion] = useState(new Quaternion());
   const [currentSkill, setCurrentSkill] = useState<string | null>(null);
 
