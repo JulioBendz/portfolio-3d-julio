@@ -1,10 +1,11 @@
 import React from 'react';
-import ProfileCard from './ProfileCard';
 
 const Header: React.FC = () => {
   return (
     <header className="w-full p-4 bg-gray-900 bg-opacity-50 shadow-lg flex items-center justify-between z-20">
-      <ProfileCard />
+      <div className="flex items-center">
+        <img src="/Logo-Perfil.png" alt="Julio Bendezú Logo" className="h-12 w-12 mr-4" />
+      </div>
       <nav className="flex-grow flex justify-end">
         <ul className="flex space-x-6">
           <li><a href="#about" className="text-white hover:text-blue-400 text-lg font-semibold">Acerca de</a></li>
