@@ -15,8 +15,7 @@ const ExternalLinkButton: React.FC = () => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className={`
-        fixed top-1/6 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 
-        px-8 py-4 rounded-xl font-bold text-white text-lg
+        px-4 py-2 rounded-xl font-bold text-white text-lg
         transition-all duration-300 transform hover:scale-110
         ${hovered ? 'bg-blue-500 shadow-2xl' : 'bg-blue-600 shadow-xl'}
         hover:shadow-3xl backdrop-blur-sm
