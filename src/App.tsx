@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import ProjectDisplay from './components/ProjectDisplay';
 import ProjectDetailModal from './components/ProjectDetailModal';
 import StarsBackground from './components/StarsBackground';
+import { WordPressButtonHTML } from './components/WordPressButton';
 import { projectsData, Project } from './data/projects';
 
 function App() {
@@ -32,6 +33,9 @@ function App() {
           <StarsBackground />
         </Canvas>
       </div>
+
+      {/* Botón WordPress HTML (alternativa funcional) */}
+      <WordPressButtonHTML />
 
       {/* Contenido principal */}
       <div className="relative z-10 grid grid-rows-[auto_1fr_auto] h-full">
