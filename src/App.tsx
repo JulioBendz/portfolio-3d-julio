@@ -6,7 +6,7 @@ import Footer from './components/Footer';
 import ProjectDisplay from './components/ProjectDisplay';
 import ProjectDetailModal from './components/ProjectDetailModal';
 import StarsBackground from './components/StarsBackground';
-import { WordPressButtonHTML } from './components/WordPressButton';
+import ExternalLinkButton from './components/ExternalLinkButton';
 import { projectsData, Project } from './data/projects';
 
 function App() {
@@ -30,12 +30,12 @@ function App() {
       {/* Fondo de estrellas a pantalla completa */}
       <div className="absolute inset-0 z-0">
         <Canvas>
-          <StarsBackground />
+          <StarsBackground skill={selectedSkill} />
         </Canvas>
       </div>
 
       {/* Botón WordPress HTML (alternativa funcional) */}
-      <WordPressButtonHTML />
+      <ExternalLinkButton />
 
       {/* Contenido principal */}
       <div className="relative z-10 grid grid-rows-[auto_1fr_auto] h-full">
