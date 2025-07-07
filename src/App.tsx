@@ -24,6 +24,12 @@ function App() {
       setIsAutoRotating(true);
     }, 10000); // 10 seconds
   };
+  // Pause the inactivity timer when the mouse is over the project display
+  const pauseInactivityTimer = () => {
+    if (inactivityTimer.current) {
+      clearTimeout(inactivityTimer.current);
+    }
+  };
 
   useEffect(() => {
     resetInactivityTimer();
@@ -42,12 +48,16 @@ function App() {
 
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
-    resetInactivityTimer();
+    pauseInactivityTimer(); // Pause timer when modal opens
   };
 
   const handleCloseModal = () => {
     setSelectedProject(null);
-    resetInactivityTimer();
+    // Only reset timer if no skill was selected (i.e., cube was auto-rotating)
+    // Otherwise, keep the cube static on the selected skill
+    if (selectedSkill === null) {
+      resetInactivityTimer();
+    }
   };
 
   return (
@@ -65,8 +75,8 @@ function App() {
         <main className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-4 p-4 overflow-auto">
           <div 
             className="flex flex-col items-start justify-start"
-            onMouseEnter={resetInactivityTimer}
-            onClick={resetInactivityTimer}
+            onMouseEnter={pauseInactivityTimer}
+            onMouseLeave={resetInactivityTimer}
           >
             <ProjectDisplay 
               projects={selectedSkill ? projectsData[selectedSkill] || [] : []} 
