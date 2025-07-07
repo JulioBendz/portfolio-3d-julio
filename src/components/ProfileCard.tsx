@@ -2,7 +2,7 @@ import React from 'react';
 
 const ProfileCard: React.FC = () => {
   return (
-    <div className="absolute top-8 left-8 flex flex-col items-start z-10">
+    <div className="flex flex-col items-start z-10">
       <div className="flex items-center">
         <img 
           src="/my-photo.jpg" 

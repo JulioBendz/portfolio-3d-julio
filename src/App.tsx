@@ -7,6 +7,7 @@ import ProjectDisplay from './components/ProjectDisplay';
 import ProjectDetailModal from './components/ProjectDetailModal';
 import StarsBackground from './components/StarsBackground';
 import ExternalLinkButton from './components/ExternalLinkButton';
+import ProfileCard from './components/ProfileCard';
 import { projectsData, Project } from './data/projects';
 
 function App() {
@@ -24,7 +25,7 @@ function App() {
       setIsAutoRotating(true);
     }, 10000); // 10 seconds
   };
-  // Pause the inactivity timer when the mouse is over the project display
+
   const pauseInactivityTimer = () => {
     if (inactivityTimer.current) {
       clearTimeout(inactivityTimer.current);
@@ -68,16 +69,15 @@ function App() {
         </Canvas>
       </div>
 
-      <ExternalLinkButton />
-
       <div className="relative z-10 grid grid-rows-[auto_1fr_auto] h-full">
         <Header />
-        <main className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-4 p-4 overflow-auto">
+        <main className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-4 p-4 overflow-auto pt-6">
           <div 
             className="flex flex-col items-start justify-start"
             onMouseEnter={pauseInactivityTimer}
             onMouseLeave={resetInactivityTimer}
           >
+            <ProfileCard />
             <ProjectDisplay 
               projects={selectedSkill ? projectsData[selectedSkill] || [] : []} 
               onProjectClick={handleProjectClick} 
