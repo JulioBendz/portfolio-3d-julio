@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import ProjectDisplay from './components/ProjectDisplay';
 import ProjectDetailModal from './components/ProjectDetailModal';
 import StarsBackground from './components/StarsBackground';
-import ExternalLinkButton from './components/ExternalLinkButton';
 import ProfileCard from './components/ProfileCard';
 import { projectsData, Project } from './data/projects';
 
@@ -14,7 +13,7 @@ function App() {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
-  const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
+  const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const resetInactivityTimer = () => {
     if (inactivityTimer.current) {
@@ -67,6 +66,16 @@ function App() {
         <Canvas>
           <StarsBackground skill={selectedSkill} />
         </Canvas>
+      </div>
+
+      {/* Banner de "En Desarrollo" en el centro */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 py-3 rounded-full shadow-2xl animate-pulse">
+          <span className="text-lg font-bold flex items-center">
+            <span className="w-3 h-3 bg-red-500 rounded-full mr-3 animate-ping"></span>
+            🚧 En Desarrollo
+          </span>
+        </div>
       </div>
 
       <div className="relative z-10 grid grid-rows-[auto_1fr_auto] h-full">
