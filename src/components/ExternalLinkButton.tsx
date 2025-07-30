@@ -6,7 +6,7 @@ const ExternalLinkButton: React.FC = () => {
 
   const openLink = () => {
     console.log('HTML Button clicked! Opening link...');
-    window.open('https://juliobendezu.com', '_blank', 'noopener,noreferrer');
+    window.open('https://portfoliowp.juliobendezu.com/', '_blank', 'noopener,noreferrer');
   };
 
   return (
