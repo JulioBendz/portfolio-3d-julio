@@ -133,11 +133,17 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
       {/* Proyectos como overlay HTML con mejor visualización 3D */}
       {projects.length > 0 && (
         <Html 
-          position={isMobile ? [0, -5, 0] : isTablet ? [0, -4, 0] : [-8, 0, 0]} 
+          position={isMobile ? [0, -8, 0] : isTablet ? [0, -6, 0] : [-10, 0, 0]} 
           center={isMobile || isTablet}
-          transform
-          distanceFactor={isMobile ? 15 : isTablet ? 12 : 10}
+          transform={false}
+          distanceFactor={isMobile ? 25 : isTablet ? 18 : 12}
           zIndexRange={[0, 10]}
+          style={{
+            transform: 'none',
+            width: isMobile ? '320px' : isTablet ? '380px' : '400px',
+            maxWidth: '95vw',
+            pointerEvents: 'auto'
+          }}
         >
           <div className="bg-gray-900 bg-opacity-95 p-4 sm:p-5 rounded-xl shadow-2xl border-2 border-gray-600 max-w-xs sm:max-w-sm lg:max-w-md transform hover:scale-105 transition-transform duration-300">
             <h3 className="text-white text-sm sm:text-base font-bold mb-3 text-center border-b border-gray-600 pb-2">
