@@ -1,7 +1,8 @@
 import { useRef, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Group, Quaternion, Euler } from 'three';
-import { Edges, Text } from '@react-three/drei';
+import { Edges, Text, Html } from '@react-three/drei';
+import { Project } from '../data/projects';
 
 const skills = ['Angular', 'React', 'Three.js', 'Node.js', 'SQL', '.Net'];
 
@@ -38,9 +39,12 @@ interface RotatingCubeProps {
   targetQuaternion: Quaternion;
   onRotationComplete: () => void;
   onFaceClick: (skillIndex: number) => void;
+  projects: Project[];
+  onProjectClick: (project: Project) => void;
+  selectedSkill: string | null;
 }
 
-const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, onFaceClick }: RotatingCubeProps) => {
+const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, onFaceClick, projects, onProjectClick, selectedSkill }: RotatingCubeProps) => {
   const meshRef = useRef<Group>(null!);
   const [isRotating, setIsRotating] = useState(false);
 
@@ -109,6 +113,43 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
           {skill}
         </Text>
       ))}
+      
+      {/* Proyectos como overlay HTML */}
+      {projects.length > 0 && (
+        <Html position={[0, -4, 0]} center>
+          <div className="bg-gray-900 bg-opacity-90 p-3 sm:p-4 rounded-lg shadow-lg border border-gray-700 max-w-xs sm:max-w-sm lg:max-w-md">
+            <h3 className="text-white text-sm sm:text-base font-bold mb-2 text-center">
+              Proyectos de {selectedSkill}
+            </h3>
+            <div className="space-y-2 sm:space-y-3">
+              {projects.slice(0, 3).map((project, index) => (
+                <div key={index} className="bg-gray-800 bg-opacity-75 p-2 sm:p-3 rounded-lg flex flex-col">
+                  <h4 className="text-white text-xs sm:text-sm font-bold mb-1">{project.title}</h4>
+                  <p className="text-gray-300 text-xs mb-2 line-clamp-2">{project.description}</p>
+                  <div className="flex gap-1 sm:gap-2">
+                    <button 
+                      onClick={() => onProjectClick(project)}
+                      className="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs transition-colors"
+                    >
+                      Ver más
+                    </button>
+                    {project.url && (
+                      <a 
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded text-xs transition-colors text-center"
+                      >
+                        Demo
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Html>
+      )}
     </group>
   );
 };
@@ -117,9 +158,12 @@ interface AnimatedCubeProps {
   onSkillClick: (skill: string | null) => void;
   isAutoRotating: boolean;
   setIsAutoRotating: (isAutoRotating: boolean) => void;
+  projects: Project[];
+  onProjectClick: (project: Project) => void;
+  selectedSkill: string | null;
 }
 
-const AnimatedCube = ({ onSkillClick, isAutoRotating, setIsAutoRotating }: AnimatedCubeProps) => {
+const AnimatedCube = ({ onSkillClick, isAutoRotating, setIsAutoRotating, projects, onProjectClick, selectedSkill }: AnimatedCubeProps) => {
   const [targetQuaternion, setTargetQuaternion] = useState(new Quaternion());
   const [currentSkill, setCurrentSkill] = useState<string | null>(null);
 
@@ -146,6 +190,9 @@ const AnimatedCube = ({ onSkillClick, isAutoRotating, setIsAutoRotating }: Anima
         targetQuaternion={targetQuaternion}
         onFaceClick={handleFaceClick}
         onRotationComplete={handleRotationComplete}
+        projects={projects}
+        onProjectClick={onProjectClick}
+        selectedSkill={selectedSkill}
       />
     </>
   );

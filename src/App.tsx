@@ -3,7 +3,6 @@ import { Canvas } from '@react-three/fiber';
 import AnimatedCube from './components/AnimatedCube';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import ProjectDisplay from './components/ProjectDisplay';
 import ProjectDetailModal from './components/ProjectDetailModal';
 import StarsBackground from './components/StarsBackground';
 import ProfileCard from './components/ProfileCard';
@@ -60,6 +59,8 @@ function App() {
     }
   };
 
+  const currentProjects = selectedSkill ? projectsData[selectedSkill] || [] : [];
+
   return (
     <div className="relative h-screen w-screen bg-[#282c34]">
       <div className="absolute inset-0 z-0">
@@ -81,14 +82,14 @@ function App() {
       <div className="relative z-10 flex flex-col h-full">
         <Header />
         
-        {/* Contenido principal reorganizado */}
+        {/* Contenido principal */}
         <main className="flex-1 flex flex-col lg:flex-row gap-4 p-2 sm:p-4 overflow-auto pt-6">
-          {/* Columna izquierda: ProfileCard y botón */}
-          <div className="flex flex-col items-start justify-start order-1 lg:order-1 lg:w-1/2">
+          {/* Columna izquierda: ProfileCard centrado */}
+          <div className="flex flex-col items-center justify-start order-1 lg:order-1 lg:w-1/2">
             <ProfileCard />
           </div>
           
-          {/* Columna derecha: Cubo 3D */}
+          {/* Columna derecha: Cubo 3D con proyectos integrados */}
           <div className="relative w-full h-80 sm:h-96 lg:h-full flex items-end sm:items-end lg:items-center justify-center order-2 lg:order-2 lg:w-1/2">
             <div className="w-full h-full max-w-sm sm:max-w-md lg:max-w-md max-h-sm sm:max-h-md lg:max-h-md">
               <Canvas>
@@ -96,23 +97,14 @@ function App() {
                   onSkillClick={handleSkillClick} 
                   isAutoRotating={isAutoRotating}
                   setIsAutoRotating={setIsAutoRotating}
+                  projects={currentProjects}
+                  onProjectClick={handleProjectClick}
+                  selectedSkill={selectedSkill}
                 />
               </Canvas>
             </div>
           </div>
         </main>
-
-        {/* Proyectos en la parte inferior */}
-        <div 
-          className="order-3"
-          onMouseEnter={pauseInactivityTimer}
-          onMouseLeave={resetInactivityTimer}
-        >
-          <ProjectDisplay 
-            projects={selectedSkill ? projectsData[selectedSkill] || [] : []} 
-            onProjectClick={handleProjectClick} 
-          />
-        </div>
         
         <Footer />
       </div>
