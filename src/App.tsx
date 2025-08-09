@@ -89,8 +89,8 @@ function App() {
           </div>
           
           {/* Columna derecha: Cubo 3D */}
-          <div className="relative w-full h-64 sm:h-80 lg:h-full flex items-center justify-center order-2 lg:order-2 lg:w-1/2">
-            <div className="w-full h-full max-w-md max-h-md">
+          <div className="relative w-full h-80 sm:h-96 lg:h-full flex items-end sm:items-end lg:items-center justify-center order-2 lg:order-2 lg:w-1/2">
+            <div className="w-full h-full max-w-sm sm:max-w-md lg:max-w-md max-h-sm sm:max-h-md lg:max-h-md">
               <Canvas>
                 <AnimatedCube 
                   onSkillClick={handleSkillClick} 

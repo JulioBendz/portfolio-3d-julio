@@ -8,7 +8,7 @@ const ProfileCard: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-start z-10 w-full">
+    <div className="flex flex-col items-center sm:items-start z-10 w-full">
       <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
         <img 
           src="/my-photo.jpg" 

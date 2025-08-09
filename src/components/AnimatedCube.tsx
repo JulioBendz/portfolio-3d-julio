@@ -44,6 +44,24 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
   const meshRef = useRef<Group>(null!);
   const [isRotating, setIsRotating] = useState(false);
 
+  // Detectar el tamaño de pantalla para ajustar el tamaño del cubo
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const isTablet = typeof window !== 'undefined' && window.innerWidth >= 640 && window.innerWidth < 1024;
+  const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+  
+  // Tamaño del cubo según el dispositivo
+  let cubeSize = 3.2; // Tamaño base
+  if (isMobile) {
+    cubeSize = 3.5; // Un poco más grande en móviles pero no tanto
+  } else if (isTablet) {
+    cubeSize = 3.3; // Ligeramente más grande en tablets
+  } else {
+    cubeSize = 3.2; // Tamaño original en desktop
+  }
+
+  // Posición Y del cubo según el dispositivo
+  const cubePositionY = isMobile ? -1 : isTablet ? -0.8 : 0; // Mover hacia abajo en móviles
+
   useFrame(() => {
     if (!meshRef.current) return;
 
@@ -69,9 +87,9 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
   }
 
   return (
-    <group ref={meshRef}>
+    <group ref={meshRef} position={[0, cubePositionY, 0]}>
       <mesh>
-        <boxGeometry args={[3.2, 3.2, 3.2]} />
+        <boxGeometry args={[cubeSize, cubeSize, cubeSize]} />
         <meshStandardMaterial color={'#64B5F6'} transparent={true} opacity={0.3} />
         <Edges>
           <meshBasicMaterial attach="material" color="#FFFFFF" />
@@ -80,9 +98,9 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
       {skills.map((skill, index) => (
         <Text
           key={skill}
-          position={facePositions[index]}
+          position={[facePositions[index][0] * (cubeSize/3.2), facePositions[index][1] * (cubeSize/3.2), facePositions[index][2] * (cubeSize/3.2)]}
           rotation={faceRotations[index]}
-          fontSize={0.5}
+          fontSize={isMobile ? 0.55 : isTablet ? 0.52 : 0.5}
           color="#fff"
           anchorX="center"
           anchorY="middle"
