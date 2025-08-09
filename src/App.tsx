@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import ProjectDetailModal from './components/ProjectDetailModal';
 import StarsBackground from './components/StarsBackground';
 import ProfileCard from './components/ProfileCard';
-import ProjectDisplay from './components/ProjectDisplay';
 import { projectsData, Project } from './data/projects';
 
 function App() {
@@ -130,9 +129,33 @@ function App() {
             </div>
           </div>
 
-          {/* Lista de proyectos SOLO en pantallas pequeñas y medianas (debajo del cubo). */}
-          <div className="block lg:hidden w-full order-3">
-            <ProjectDisplay projects={currentProjects} onProjectClick={handleProjectClick} />
+          {/* Panel proyectos en móviles/tablets (similar estilo, debajo del cubo) */}
+          <div className={`block lg:hidden w-full order-3 transition-all duration-500 ease-out ${selectedSkill ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none -translate-y-2'}`}>
+            {selectedSkill && (
+              <div className="rounded-2xl border border-gray-700/40 bg-gray-950/70 backdrop-blur-sm p-4 sm:p-5 overflow-hidden">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-white text-lg sm:text-xl font-bold">Proyectos de {selectedSkill}</h3>
+                  <button onClick={() => setSelectedSkill(null)} className="text-xs text-gray-300 hover:text-white border border-gray-500/40 px-2 py-1 rounded-md transition-colors">Cerrar</button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto pr-1 custom-scrollbar max-h-[50vh]">
+                  {currentProjects.map((project, idx) => (
+                    <div key={idx} className="bg-gray-800/80 hover:bg-gray-800/95 p-4 rounded-xl border border-gray-600/50 hover:border-blue-400/60 transition-all duration-200 flex flex-col group">
+                      <h4 className="text-white text-sm font-semibold mb-2 group-hover:text-blue-300 line-clamp-2 min-h-[2.5rem]">{project.title}</h4>
+                      <p className="text-gray-300 text-xs leading-relaxed mb-3 line-clamp-3 flex-1">{project.description}</p>
+                      <div className="flex gap-2 mt-auto">
+                        <button onClick={() => handleProjectClick(project)} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-2 rounded-lg text-xs transition-colors">Ver más</button>
+                        {project.url && (
+                          <a href={project.url} target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-2 rounded-lg text-xs text-center transition-colors">Demo</a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  {selectedSkill && currentProjects.length === 0 && (
+                    <div className="col-span-1 sm:col-span-2 text-center text-gray-300 text-sm py-10 border border-dashed border-gray-600/40 rounded-xl">Sin proyectos aún.</div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </main>
         
