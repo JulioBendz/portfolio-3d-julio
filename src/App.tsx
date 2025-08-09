@@ -68,31 +68,28 @@ function App() {
         </Canvas>
       </div>
 
-      {/* Banner de "En Desarrollo" en el centro */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 py-3 rounded-full shadow-2xl animate-pulse">
-          <span className="text-lg font-bold flex items-center">
-            <span className="w-3 h-3 bg-red-500 rounded-full mr-3 animate-ping"></span>
+      {/* Banner de "En Desarrollo" responsive */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 px-4">
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-2xl animate-pulse">
+          <span className="text-sm sm:text-lg font-bold flex items-center justify-center">
+            <span className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full mr-2 sm:mr-3 animate-ping"></span>
             🚧 En Desarrollo
           </span>
         </div>
       </div>
 
-      <div className="relative z-10 grid grid-rows-[auto_1fr_auto] h-full">
+      <div className="relative z-10 flex flex-col h-full">
         <Header />
-        <main className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-4 p-4 overflow-auto pt-6">
-          <div 
-            className="flex flex-col items-start justify-start"
-            onMouseEnter={pauseInactivityTimer}
-            onMouseLeave={resetInactivityTimer}
-          >
+        
+        {/* Contenido principal reorganizado */}
+        <main className="flex-1 flex flex-col lg:flex-row gap-4 p-2 sm:p-4 overflow-auto pt-6">
+          {/* Columna izquierda: ProfileCard y botón */}
+          <div className="flex flex-col items-start justify-start order-1 lg:order-1 lg:w-1/2">
             <ProfileCard />
-            <ProjectDisplay 
-              projects={selectedSkill ? projectsData[selectedSkill] || [] : []} 
-              onProjectClick={handleProjectClick} 
-            />
           </div>
-          <div className="relative w-full h-full flex items-center justify-end">
+          
+          {/* Columna derecha: Cubo 3D */}
+          <div className="relative w-full h-64 sm:h-80 lg:h-full flex items-center justify-center order-2 lg:order-2 lg:w-1/2">
             <div className="w-full h-full max-w-md max-h-md">
               <Canvas>
                 <AnimatedCube 
@@ -104,6 +101,19 @@ function App() {
             </div>
           </div>
         </main>
+
+        {/* Proyectos en la parte inferior */}
+        <div 
+          className="order-3"
+          onMouseEnter={pauseInactivityTimer}
+          onMouseLeave={resetInactivityTimer}
+        >
+          <ProjectDisplay 
+            projects={selectedSkill ? projectsData[selectedSkill] || [] : []} 
+            onProjectClick={handleProjectClick} 
+          />
+        </div>
+        
         <Footer />
       </div>
 
