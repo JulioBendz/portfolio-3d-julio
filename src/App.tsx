@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import ProjectDetailModal from './components/ProjectDetailModal';
 import StarsBackground from './components/StarsBackground';
 import ProfileCard from './components/ProfileCard';
+import ProjectDisplay from './components/ProjectDisplay';
 import { projectsData, Project } from './data/projects';
 
 function App() {
@@ -82,19 +83,19 @@ function App() {
       <div className="relative z-10 flex flex-col h-full">
         <Header />
         
-        {/* Contenido principal */}
-        <main className="flex-1 flex flex-col lg:flex-row gap-4 p-2 sm:p-4 overflow-auto pt-6">
+  {/* Contenido principal */}
+  <main className="flex-1 flex flex-col lg:flex-row gap-4 p-2 sm:p-4 overflow-auto pt-6">
           {/* Columna izquierda: ProfileCard centrado */}
           <div className="flex flex-col items-center justify-start order-1 lg:order-1 lg:w-1/2">
             <ProfileCard />
           </div>
           
-          {/* Columna derecha: Cubo 3D con proyectos integrados */}
+          {/* Columna derecha: Cubo 3D (overlay proyectos sólo en desktop dentro del propio componente) */}
           <div className="relative w-full h-80 sm:h-96 lg:h-full flex items-end sm:items-end lg:items-center justify-center order-2 lg:order-2 lg:w-1/2">
             <div className="w-full h-full max-w-sm sm:max-w-md lg:max-w-md max-h-sm sm:max-h-md lg:max-h-md">
               <Canvas>
-                <AnimatedCube 
-                  onSkillClick={handleSkillClick} 
+                <AnimatedCube
+                  onSkillClick={handleSkillClick}
                   isAutoRotating={isAutoRotating}
                   setIsAutoRotating={setIsAutoRotating}
                   projects={currentProjects}
@@ -103,6 +104,11 @@ function App() {
                 />
               </Canvas>
             </div>
+          </div>
+
+          {/* Lista de proyectos SOLO en pantallas pequeñas y medianas (debajo del cubo). Oculta en lg porque ahí se muestra overlay 3D. */}
+          <div className="block lg:hidden w-full order-3">
+            <ProjectDisplay projects={currentProjects} onProjectClick={handleProjectClick} />
           </div>
         </main>
         

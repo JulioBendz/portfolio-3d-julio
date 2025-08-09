@@ -68,6 +68,7 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
   // Detectar el tamaño de pantalla para ajustar el tamaño del cubo
   const isMobile = windowSize.width < 640;
   const isTablet = windowSize.width >= 640 && windowSize.width < 1024;
+  const isLarge = windowSize.width >= 1024;
   
   // Tamaño del cubo según el dispositivo
   let cubeSize = 3.2; // Tamaño base
@@ -130,43 +131,51 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
         </Text>
       ))}
       
-      {/* Proyectos como overlay HTML con mejor visualización 3D */}
-      {projects.length > 0 && (
-        <Html 
-          position={isMobile ? [0, -8, 0] : isTablet ? [0, -6, 0] : [-10, 0, 0]} 
-          center={isMobile || isTablet}
+      {/* Proyectos como overlay SOLO en pantallas grandes (>=1024) */}
+      {isLarge && projects.length > 0 && (
+        <Html
+          // Posicionar a la derecha del cubo para no taparlo
+          position={[6.5, 1.2, 0]}
+          center={false}
           transform={false}
-          distanceFactor={isMobile ? 25 : isTablet ? 18 : 12}
-          zIndexRange={[0, 10]}
+          distanceFactor={12}
+          zIndexRange={[0, 20]}
           style={{
             transform: 'none',
-            width: isMobile ? '320px' : isTablet ? '380px' : '400px',
-            maxWidth: '95vw',
+            width: '540px',
+            maxWidth: '40vw',
             pointerEvents: 'auto'
           }}
         >
-          <div className="bg-gray-900 bg-opacity-95 p-4 sm:p-5 rounded-xl shadow-2xl border-2 border-gray-600 max-w-xs sm:max-w-sm lg:max-w-md transform hover:scale-105 transition-transform duration-300">
-            <h3 className="text-white text-sm sm:text-base font-bold mb-3 text-center border-b border-gray-600 pb-2">
+          <div className="bg-gray-950/90 backdrop-blur-sm p-6 rounded-2xl shadow-2xl border border-gray-700/70 hover:border-gray-500 transition-colors duration-300">
+            <h3 className="text-white text-xl font-bold mb-5 tracking-wide text-center">
               Proyectos de {selectedSkill}
             </h3>
-            <div className="space-y-3 sm:space-y-4">
-              {projects.slice(0, 3).map((project, index) => (
-                <div key={index} className="bg-gray-800 bg-opacity-90 p-3 sm:p-4 rounded-lg flex flex-col border border-gray-600 hover:bg-opacity-95 transition-all duration-200">
-                  <h4 className="text-white text-xs sm:text-sm font-bold mb-2">{project.title}</h4>
-                  <p className="text-gray-300 text-xs mb-3 line-clamp-2 leading-relaxed">{project.description}</p>
-                  <div className="flex gap-2 sm:gap-3">
-                    <button 
+            <div className="grid grid-cols-2 gap-4 max-h-[420px] overflow-y-auto pr-1 custom-scrollbar">
+              {projects.map((project, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-800/80 hover:bg-gray-800/95 p-4 rounded-xl border border-gray-600/60 hover:border-blue-400/60 transition-all duration-200 flex flex-col group"
+                >
+                  <h4 className="text-white text-sm font-semibold mb-2 group-hover:text-blue-300 line-clamp-2 min-h-[2.5rem]">
+                    {project.title}
+                  </h4>
+                  <p className="text-gray-300 text-xs leading-relaxed mb-3 line-clamp-3 flex-1">
+                    {project.description}
+                  </p>
+                  <div className="flex gap-2 mt-auto">
+                    <button
                       onClick={() => onProjectClick(project)}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200 hover:shadow-lg"
+                      className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-2 rounded-lg text-xs transition-colors"
                     >
                       Ver más
                     </button>
                     {project.url && (
-                      <a 
+                      <a
                         href={project.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200 hover:shadow-lg text-center"
+                        className="bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-2 rounded-lg text-xs text-center transition-colors"
                       >
                         Demo
                       </a>
