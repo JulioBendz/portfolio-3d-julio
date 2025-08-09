@@ -68,7 +68,6 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
   // Detectar el tamaño de pantalla para ajustar el tamaño del cubo
   const isMobile = windowSize.width < 640;
   const isTablet = windowSize.width >= 640 && windowSize.width < 1024;
-  const isDesktop = windowSize.width >= 1024;
   
   // Tamaño del cubo según el dispositivo
   let cubeSize = 3.2; // Tamaño base
@@ -131,26 +130,28 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
         </Text>
       ))}
       
-      {/* Proyectos como overlay HTML */}
+      {/* Proyectos como overlay HTML con mejor visualización 3D */}
       {projects.length > 0 && (
         <Html 
           position={isMobile ? [0, -5, 0] : isTablet ? [0, -4, 0] : [-8, 0, 0]} 
           center={isMobile || isTablet}
           transform
+          distanceFactor={isMobile ? 15 : isTablet ? 12 : 10}
+          zIndexRange={[0, 10]}
         >
-          <div className="bg-gray-900 bg-opacity-90 p-3 sm:p-4 rounded-lg shadow-lg border border-gray-700 max-w-xs sm:max-w-sm lg:max-w-md">
-            <h3 className="text-white text-sm sm:text-base font-bold mb-2 text-center">
+          <div className="bg-gray-900 bg-opacity-95 p-4 sm:p-5 rounded-xl shadow-2xl border-2 border-gray-600 max-w-xs sm:max-w-sm lg:max-w-md transform hover:scale-105 transition-transform duration-300">
+            <h3 className="text-white text-sm sm:text-base font-bold mb-3 text-center border-b border-gray-600 pb-2">
               Proyectos de {selectedSkill}
             </h3>
-            <div className="space-y-2 sm:space-y-3">
+            <div className="space-y-3 sm:space-y-4">
               {projects.slice(0, 3).map((project, index) => (
-                <div key={index} className="bg-gray-800 bg-opacity-75 p-2 sm:p-3 rounded-lg flex flex-col">
-                  <h4 className="text-white text-xs sm:text-sm font-bold mb-1">{project.title}</h4>
-                  <p className="text-gray-300 text-xs mb-2 line-clamp-2">{project.description}</p>
-                  <div className="flex gap-1 sm:gap-2">
+                <div key={index} className="bg-gray-800 bg-opacity-90 p-3 sm:p-4 rounded-lg flex flex-col border border-gray-600 hover:bg-opacity-95 transition-all duration-200">
+                  <h4 className="text-white text-xs sm:text-sm font-bold mb-2">{project.title}</h4>
+                  <p className="text-gray-300 text-xs mb-3 line-clamp-2 leading-relaxed">{project.description}</p>
+                  <div className="flex gap-2 sm:gap-3">
                     <button 
                       onClick={() => onProjectClick(project)}
-                      className="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs transition-colors"
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200 hover:shadow-lg"
                     >
                       Ver más
                     </button>
@@ -159,7 +160,7 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
                         href={project.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded text-xs transition-colors text-center"
+                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200 hover:shadow-lg text-center"
                       >
                         Demo
                       </a>
