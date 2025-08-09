@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Group, Quaternion, Euler } from 'three';
 import { Edges, Text, Html } from '@react-three/drei';
@@ -47,24 +47,41 @@ interface RotatingCubeProps {
 const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, onFaceClick, projects, onProjectClick, selectedSkill }: RotatingCubeProps) => {
   const meshRef = useRef<Group>(null!);
   const [isRotating, setIsRotating] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1024,
+    height: typeof window !== 'undefined' ? window.innerHeight : 768
+  });
+
+  // Detectar cambios en el tamaño de la ventana
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Detectar el tamaño de pantalla para ajustar el tamaño del cubo
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const isTablet = typeof window !== 'undefined' && window.innerWidth >= 640 && window.innerWidth < 1024;
-  const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+  const isMobile = windowSize.width < 640;
+  const isTablet = windowSize.width >= 640 && windowSize.width < 1024;
+  const isDesktop = windowSize.width >= 1024;
   
   // Tamaño del cubo según el dispositivo
   let cubeSize = 3.2; // Tamaño base
   if (isMobile) {
-    cubeSize = 3.5; // Un poco más grande en móviles pero no tanto
+    cubeSize = 3.0; // Un poco más pequeño en móviles para evitar cortes
   } else if (isTablet) {
-    cubeSize = 3.3; // Ligeramente más grande en tablets
+    cubeSize = 3.2; // Tamaño original en tablets
   } else {
     cubeSize = 3.2; // Tamaño original en desktop
   }
 
   // Posición Y del cubo según el dispositivo
-  const cubePositionY = isMobile ? -1 : isTablet ? -0.8 : 0; // Mover hacia abajo en móviles
+  const cubePositionY = isMobile ? -0.5 : isTablet ? -0.3 : 0; // Mover hacia abajo en móviles
 
   useFrame(() => {
     if (!meshRef.current) return;
@@ -104,7 +121,7 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
           key={skill}
           position={[facePositions[index][0] * (cubeSize/3.2), facePositions[index][1] * (cubeSize/3.2), facePositions[index][2] * (cubeSize/3.2)]}
           rotation={faceRotations[index]}
-          fontSize={isMobile ? 0.55 : isTablet ? 0.52 : 0.5}
+          fontSize={isMobile ? 0.5 : isTablet ? 0.52 : 0.5}
           color="#fff"
           anchorX="center"
           anchorY="middle"
@@ -116,7 +133,11 @@ const RotatingCube = ({ isAutoRotating, targetQuaternion, onRotationComplete, on
       
       {/* Proyectos como overlay HTML */}
       {projects.length > 0 && (
-        <Html position={[0, -4, 0]} center>
+        <Html 
+          position={isMobile ? [0, -5, 0] : isTablet ? [0, -4, 0] : [-8, 0, 0]} 
+          center={isMobile || isTablet}
+          transform
+        >
           <div className="bg-gray-900 bg-opacity-90 p-3 sm:p-4 rounded-lg shadow-lg border border-gray-700 max-w-xs sm:max-w-sm lg:max-w-md">
             <h3 className="text-white text-sm sm:text-base font-bold mb-2 text-center">
               Proyectos de {selectedSkill}
